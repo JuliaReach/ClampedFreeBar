@@ -1,0 +1,131 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+\urlstyle{same}
+
+\title{Clamped-Free Bar Model for ARCH-COMP 2021 AFF category}
+\date{May 2021}
+
+\usepackage{comment}
+\usepackage{natbib}
+\usepackage{graphicx}
+
+\begin{document}
+
+\maketitle
+
+\section{Model description}
+
+We consider a uni-dimensional wave propagation problem from \citep{malakiyeh2019bathe}. The problem is governed by the partial differential equation
+\begin{equation}
+EA \dfrac{\partial^2 u} {\partial x^2}(x,t) - \rho A \frac{\partial^2 u}{\partial t^2}(x,t) = 0, \label{eq:clamped_bar}
+\end{equation}
+where $u(x,t)$ is the displacement of the point in position $x$ at time $t$, considering the axis shown in Figure~\ref{fig:clampedDiagram}.
+%
+The model consists of a bar of length $L=200$ and cross-section area $A=1$. The bar is formed by a linear elastic material with Young modulus $E = 30\times 10^6$ and density $\rho = 7.3 \times 10^{-4}$.
+%
+
+\begin{figure}[htb]
+	\centering
+	\def\svgwidth{0.65\textwidth}
+	\input{clamped.pdf_tex}
+	\caption{Example 2: diagram of the clamped-free bar excited by end load}
+	\label{fig:clampedDiagram}
+\end{figure}
+
+% initial conditions
+The bar is considered to be initially at rest, with $u(x, 0) = 0$ and $\frac{\partial u}{\partial t}(x, 0) = 0$ for all $x \in [0, L]$. %
+%
+The boundary conditions are $u(0, t) = 0$, corresponding to the fixed end, and  $\sigma(L) A = F(t)$, for the free end, where $\sigma(x,t) = E \frac{\partial u}{\partial x}(x,t)$.
+%
+The free end is submitted to a step force $F(t) = 10000 H(t)$, where $H(t)$ is the heaviside function.
+
+The analytical solution of this problem in the continuum can be obtained using mode superposition \citep{geradin2014mechanical} and it is given by:
+%
+\begin{equation}
+u(x, t) = \dfrac{8FL}{\pi^2 E A } \sum_{s = 1}^{\infty} \left\{ \dfrac{(-1)^{s-1}}{(2s-1)^2}\sin \dfrac{(2s-1)\pi x}{2L}\left(1 - \cos \dfrac{(2s-1)\pi \mu t}{2L} \right)
+\right\},
+\label{eq:clamped_solution}
+\end{equation}
+where $\mu = \sqrt{E/\rho}$.
+
+Considering $N$ two-node finite elements with linear interpolation, the following system of linear ODEs is obtained:
+\begin{equation} \label{eqn:dynamicsfem}
+M\dfrac{\partial^2 u(t)}{\partial t^2}+ Ku(t) = F(t), \qquad t \in [0, T],
+\end{equation}
+where the $N\times N$ stiffness and mass matrices are respectively:
+
+\begin{equation*}
+K = \dfrac{EA}{\ell}
+\begin{bmatrix}
+2 & -1 &  &  &  & 0  \\
+-1  & 2 & -1 &   &  &  \\
+& -1 & 2 & \ddots &  &  \\
+&  & \ddots & \ddots & -1 &  \\
+&  &  & -1 & 2 & -1 \\
+0 &  &  &  & -1 & 1 \\
+\end{bmatrix},~~ 
+M = \dfrac{\rho A \ell}{2}
+\begin{bmatrix}
+	2 &  &  &  &  & 0  \\
+	  & 2 &  &   &  &  \\
+	 &  & 2 &  &  &  \\
+	 &  &  & \ddots &  &  \\
+	 &  &  & & 2 & \\
+	0 &  &  &  &  & 1 \\
+\end{bmatrix},
+\label{eq:clampedMatrices}
+\end{equation*}
+where $\ell = L / N$ is the length of each element. %
+%
+In this problem it is assumed that no damping is present.
+
+\section{Transformation to first order}
+	
+Since $M$ is invertible, Eq.~\eqref{eqn:dynamicsfem} can be rewritten as a system of first order ODEs. We introduce the auxiliary variables $x = [u, u']$, then multiply the equation $Mu''(t) + Ku(t) = F(t)$ by $M^{-1}$:
+
+$$
+u'' = -M^{-1}Ku(t) + M^{-1}F(t)
+$$
+The resulting system is:
+$$
+x'(t) =\dfrac{d}{dt} \begin{bmatrix} u \\ u' \end{bmatrix} = \begin{bmatrix} 0 & I \\ -M^{-1}K & 0 \end{bmatrix}\begin{bmatrix} u \\ u' \end{bmatrix} + \begin{bmatrix} 0 \\ M^{-1}F(t) \end{bmatrix} = Ax(t) + f(t)
+$$
+
+The matrices $A$ and $b$ are provided in MAT format for problem sizes $N=100$, $N=500$ and $N=1000$.
+
+\section{Reachability settings}
+
+There are two versions of this benchmark:
+
+\begin{itemize}
+    \item CB21C: constant input $F(t)$.
+ 
+     \item CB21F: the inputs $F(t)$ can change arbitrarily over time.
+\end{itemize}
+
+The bar is considered to start at rest: $x_i = 0$ for all $i = 1, \ldots, 2N$. In both CB21C and CB21F, the forcing term is $F(t) \in [9900, 10100]$. Three scenarios are considered with an increasing number of dimensions: $N = 100$, $N=500$, $N=1000$.
+
+\section{Requirements}
+
+The tools should report the computation time for the time horizon $T = 0.01s$. Discrete-time analysis should use a step size $9.88\times 10^{-7}$. The accuracy of the results is measured by reporting the maximum value of the position (resp. velocity) at nodes $70$, $350$ and $700$ for the scenarios with $N = 100$, $N=500$ and $N = 1000$ respectively.
+
+Tools should plot the velocity at node $700$ as a function of time for the $N = 1000$ scenario (or the corresponding node for a smaller instance) for the time interval $[8.15\times 10^{-3}, 8.40\times 10^{-3}]$.
+
+% \section{Preliminary results}
+
+
+
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+\end{document}
