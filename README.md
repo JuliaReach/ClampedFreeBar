@@ -1,5 +1,5 @@
 # ClampedFreeBar
-Benchmark problem of wave propagation in a clamped-free bar
+Benchmark problem of wave propagation in a clamped-free bar.
 
 
 - [PDF version of the benchmark](https://github.com/JuliaReach/ClampedFreeBar/blob/main/tex/ClampedFreeBar.pdf)
