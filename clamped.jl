@@ -7,8 +7,6 @@ This model is taken from [1]. The theoretical derivations of the analytic soluti
 =#
 
 using ReachabilityAnalysis, LinearAlgebra, LazySets
-#using StructuralDynamicsODESolvers
-#const SD = StructuralDynamicsODESolvers
 using ReachabilityAnalysis: solve, discretize
 using LazySets.Arrays
 
@@ -48,6 +46,18 @@ function clamped_forced(; N, F=10e3, E=30e6, A=1)
     C = zeros(N, N) # no damping
     F = vcat(zeros(N-1), F) # the right-most node is excited
     sys = SecondOrderAffineContinuousSystem(M, C, K, F)
+end
+
+# NOTE we can just use normalize(..)
+function clamped_canonical(; N)
+    sys = clamped_forced(N=N)
+    M = sys.M; K = sys.K; F = sys.b
+
+    A = [zeros(N, N)   Matrix(1.0I, N, N);
+         -inv(M)*K            zeros(N, N)];
+
+    f = vcat(zeros(N), inv(M) * F);
+    return @system(x' = A*x + f)
 end
 
 # "nominal" step size
