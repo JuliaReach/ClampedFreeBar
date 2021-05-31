@@ -24,3 +24,9 @@ docs/site/
 Manifest.toml
 
 .ipynb_checkpoints/
+*.aux
+*.bbl
+*.blg
+*.log
+*.synctex.gz
+*.out

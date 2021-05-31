@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<sspaceex xmlns="http://www-verimag.imag.fr/xml-namespaces/sspaceex" version="0.2" math="SpaceEx">
+  <component id="system">
+    <param name="x1" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x2" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x3" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x4" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x5" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x6" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x7" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x8" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x9" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x10" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x11" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x12" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x13" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x14" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x15" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x16" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x17" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x18" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x19" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x20" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <param name="x21" type="real" d1="1" d2="1" local="false" dynamics="any" controlled="true" />
+    <location id="1" name="loc1">
+      <flow>x1' == 1.0 * x11 &amp; x2' == 1.0 * x12 &amp; x3' == 1.0 * x13 &amp; x4' == 1.0 * x14 &amp; x5' == 1.0 * x15 &amp; x6' == 1.0 * x16 &amp; x7' == 1.0 * x17 &amp; x8' == 1.0 * x18 &amp; x9' == 1.0 * x19 &amp; x10' == 1.0 * x20 &amp; x11' == -2.0547945205479455e8 * x1 + 1.0273972602739727e8 * x2 &amp; x12' == 1.0273972602739727e8 * x1 - 2.0547945205479455e8 * x2 + 1.0273972602739727e8 * x3 &amp; x13' == 1.0273972602739727e8 * x2 - 2.0547945205479455e8 * x3 + 1.0273972602739727e8 * x4 &amp; x14' == 1.0273972602739727e8 * x3 - 2.0547945205479455e8 * x4 + 1.0273972602739727e8 * x5 &amp; x15' == 1.0273972602739727e8 * x4 - 2.0547945205479455e8 * x5 + 1.0273972602739727e8 * x6 &amp; x16' == 1.0273972602739727e8 * x5 - 2.0547945205479455e8 * x6 + 1.0273972602739727e8 * x7 &amp; x17' == 1.0273972602739727e8 * x6 - 2.0547945205479455e8 * x7 + 1.0273972602739727e8 * x8 &amp; x18' == 1.0273972602739727e8 * x7 - 2.0547945205479455e8 * x8 + 1.0273972602739727e8 * x9 &amp; x19' == 1.0273972602739727e8 * x8 - 2.0547945205479455e8 * x9 + 1.0273972602739727e8 * x10 &amp; x20' == 2.0547945205479455e8 * x9 - 2.0547945205479455e8 * x10 + 1.3698630136986305e6 * x21 &amp; x21' == 0</flow>
+    </location>
+  </component>
+</sspaceex>
