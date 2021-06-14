@@ -86,20 +86,20 @@ M = \dfrac{\rho A \ell}{2}
 \label{eq:clampedMatrices}
 \end{equation*}
 where $\ell = L / N$ is the length of each element. %
-%
-In this problem it is assumed that no damping is present.
 
 \section{Transformation to first order}
 	
 Since $M$ is invertible, Eq.~\eqref{eqn:dynamicsfem} can be rewritten as a system of first order ODEs. We introduce the auxiliary variables $x = [u, u']$, then multiply the equation $Mu''(t) + Ku(t) = F(t)$ by $M^{-1}$:
 
-$$
+\begin{equation}
 u'' = -M^{-1}Ku(t) + M^{-1}F(t)
-$$
+\end{equation}
+
 The resulting system is:
-$$
+
+\begin{equation}
 x'(t) =\dfrac{d}{dt} \begin{bmatrix} u \\ u' \end{bmatrix} = \begin{bmatrix} 0 & I \\ -M^{-1}K & 0 \end{bmatrix}\begin{bmatrix} u \\ u' \end{bmatrix} + \begin{bmatrix} 0 \\ M^{-1}F(t) \end{bmatrix} = Ax(t) + f(t)
-$$
+\end{equation}
 
 The matrices $A$ and $b$ are provided in MAT format for problem sizes $N=100$, $N=500$ and $N=1000$.
 
@@ -123,6 +123,18 @@ Tools should plot the velocity at node $700$ as a function of time for the $N = 
 
 % \section{Preliminary results}
 
+\section{Damped case}
+
+To model a realistic beam, we consider adding a damping matrix to the system.
+
+\begin{equation}
+	C = aK + bM,
+\end{equation}
+with $a = 0.1$ and $b = 0.1$. The system matrix then becomes
+
+\begin{equation}
+x'(t) =\dfrac{d}{dt} \begin{bmatrix} u \\ u' \end{bmatrix} = \begin{bmatrix} 0 & I \\ -M^{-1}K & -M^{-1}C \end{bmatrix}\begin{bmatrix} u \\ u' \end{bmatrix} + \begin{bmatrix} 0 \\ M^{-1}F(t) \end{bmatrix} = Ax(t) + f(t).
+\end{equation}
 
 
 \bibliographystyle{unsrt}
