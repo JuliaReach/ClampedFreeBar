@@ -40,6 +40,7 @@ function clamped_forced(; N, F=10e3, E=30e6, A=1)
 end
 
 function clamped(; a=0.0, b=0.0, # ignored if damped = false
+                   constant=true,
                    N,            # number of elements
                    homogeneize,  # flag to homogeneize the system
                    damped)       # flag to consider damping C = a*K + b*M
@@ -69,11 +70,22 @@ function clamped(; a=0.0, b=0.0, # ignored if damped = false
         Aext[1:n, 1:n] .= A
         Aext[1:n, n+1] .= f0
         Aext = sparse(Aext)
-        return @system(x' = Aext*x)
+        S = @system(x' = Aext*x)
 
     else
-        return @system(x' = A*x + f0)
+        S = @system(x' = A*x + f0)
     end
+    
+    if !constant
+        @assert homogeneize == false
+
+        # model time-varying forcing
+        X = Universe(statedim(S))
+        ΔF = Interval(0.99, 1.01)
+        S = @system(x' = S.A * x + S.c * u, u ∈ ΔF, x ∈ X)
+    end
+
+    return S
 end
 
 # "nominal" step size

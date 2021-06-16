@@ -4,42 +4,70 @@ include("clamped.jl")
 
 using MAT
 
-function write_mat(; N)
-    sys = clamped_canonical(N=100)
+function write_mat(; N, damped=true)
+
+    if damped
+        sys = clamped(N=N, a=1e-6, b=1e-6, damped=true, homogeneize=false)    
+        name = "CB21d_$N.mat"
+       
+    else
+        sys = clamped(N=N, damped=false, homogeneize=false)    
+        name = "CB21_$N.mat"
+    end
+    
     dat = Dict("A" => sys.A, "b" => sys.c)
-    matwrite("CB21_$(N).mat", dat; compress = true)
+    matwrite(name, dat; compress = true)
 end
 
-write_mat(N=100)
-write_mat(N=500)
-write_mat(N=1000)
+#=
+for N in [100, 500, 1000]
+    for damped in [true, false]
+        write_mat(N=N, damped=damped)
+    end
+end
+=#
 
 # ====== Converting to SX files =======
 
-function write_sxmodel_clamped_constant(; N, U = Interval(9900, 10100))
-    aux = clamped_canonical(N=N)
+using SpaceExParser
 
-    Aext = [aux.A aux.c; zeros(1, 2N+1)]
-    Sac = @system(x' = Aext * x);
-
-    return writesxmodel("CB21C_$N.xml", Sac)
+# WARNING requires manual modification of the xml
+function write_sxmodel_clamped_constant(; N, damped=true)
+    if damped
+        sys = clamped(N=N, a=1e-6, b=1e-6, damped=true, homogeneize=true)
+        name = "CB21Cd_$N.xml"
+    else
+        sys = clamped(N=N, damped=false, homogeneize=true)
+        name = "CB21C_$N.xml"
+    end
+    writesxmodel(name, sys)
 end
 
-function write_sxmodel_clamped_timevarying(; N, U = Interval(9900, 10100))
-    aux = clamped_canonical(N=N)
-
+function write_sxmodel_clamped_timevarying(; N, U = Interval(9900, 10100), damped=true)
+    
     X = Universe(N)
-    A = aux.A
-    B = hcat(aux.c)
-    Sac = @system(x' = A*x + B*u, x ∈ X, u ∈ U);
 
-    return writesxmodel("CB21F_$N.xml", Sac)
+    if damped
+        sys = clamped(N=N, a=1e-6, b=1e-6, damped=true, homogeneize=false)
+        name = "CB21Fd_$N.xml"
+
+    else
+        sys = clamped(N=N, damped=false, homogeneize=false)
+        name = "CB21F_$N.xml"
+    end
+    
+    A = sys.A
+    B = hcat(sys.c)
+    S = @system(x' = A*x + B*u, x ∈ X, u ∈ U)
+    return writesxmodel(name, S)
 end
 
-write_sxmodel_clamped_constant(N=100)
-write_sxmodel_clamped_constant(N=500)
-write_sxmodel_clamped_constant(N=1000)
-
-write_sxmodel_clamped_timevarying(N=100)
-write_sxmodel_clamped_timevarying(N=500)
-write_sxmodel_clamped_timevarying(N=1000)
+#=
+for func in [write_sxmodel_clamped_constant, write_sxmodel_clamped_timevarying] 
+for N in [100, 500, 1000]
+    for damped in [true, false]
+        func(N=N, damped=damped)
+    end
+end
+end
+=#
