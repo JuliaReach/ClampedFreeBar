@@ -130,7 +130,7 @@ To model a realistic beam, we consider adding a damping matrix to the system.
 \begin{equation}
 	C = aK + bM,
 \end{equation}
-with $a = 0.1$ and $b = 0.1$. The system matrix then becomes
+with $a = b = 10^{-6}$. The system matrix then becomes
 
 \begin{equation}
 x'(t) =\dfrac{d}{dt} \begin{bmatrix} u \\ u' \end{bmatrix} = \begin{bmatrix} 0 & I \\ -M^{-1}K & -M^{-1}C \end{bmatrix}\begin{bmatrix} u \\ u' \end{bmatrix} + \begin{bmatrix} 0 \\ M^{-1}F(t) \end{bmatrix} = Ax(t) + f(t).
