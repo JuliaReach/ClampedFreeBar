@@ -4,19 +4,11 @@ include("clamped.jl")
 
 using MAT
 
-function write_mat(; N, damped=true)
-
-    if damped
-        sys = clamped(N=N, a=1e-6, b=1e-6, damped=true, homogeneize=false)    
-        name = "CB21d_$N.mat"
-       
-    else
-        sys = clamped(N=N, damped=false, homogeneize=false)    
-        name = "CB21_$N.mat"
-    end
-    
+function write_mat(; N, damped)
+    name = damped ? "CB21d_$N.mat" : "CB21_$N.mat"
+    sys = clamped(N=N, a=1e-6, b=1e-6, damped=damped, homogeneize=false)
     dat = Dict("A" => sys.A, "b" => sys.c)
-    matwrite(name, dat; compress = true)
+    return matwrite(name, dat; compress = true)
 end
 
 #=
@@ -31,31 +23,16 @@ end
 
 using SpaceExParser
 
-# WARNING requires manual modification of the xml
-function write_sxmodel_clamped_constant(; N, damped=true)
-    if damped
-        sys = clamped(N=N, a=1e-6, b=1e-6, damped=true, homogeneize=true)
-        name = "CB21Cd_$N.xml"
-    else
-        sys = clamped(N=N, damped=false, homogeneize=true)
-        name = "CB21C_$N.xml"
-    end
-    writesxmodel(name, sys)
+function write_sxmodel_clamped_constant(; N, damped)
+    name = damped ? "CB21Cd_$N.xml" : "CB21C_$N.xml"
+    sys = clamped(N=N, a=1e-6, b=1e-6, damped=damped, homogeneize=true)
+    return writesxmodel(name, sys)
 end
 
-function write_sxmodel_clamped_timevarying(; N, U = Interval(9900, 10100), damped=true)
-    
+function write_sxmodel_clamped_timevarying(U = Interval(0.99, 1.01); N, damped)
     X = Universe(N)
-
-    if damped
-        sys = clamped(N=N, a=1e-6, b=1e-6, damped=true, homogeneize=false)
-        name = "CB21Fd_$N.xml"
-
-    else
-        sys = clamped(N=N, damped=false, homogeneize=false)
-        name = "CB21F_$N.xml"
-    end
-    
+    name = damped ? "CB21Fd_$N.xml" : "CB21F_$N.xml"
+    sys =  clamped(N=N, a=1e-6, b=1e-6, damped=damped, homogeneize=false)    
     A = sys.A
     B = hcat(sys.c)
     S = @system(x' = A*x + B*u, x ∈ X, u ∈ U)
